@@ -1,0 +1,1 @@
+const int kSplashTime = 2;

@@ -107,7 +107,7 @@ class SingUpPageBloc extends ChangeNotifier{
   void getCountry(context){
     showCountryPicker(context: context, onSelect: (value) {
       _countryName = value.displayName;
-      _phoneCode = value.phoneCode;
+      _phoneCode = '+${value.phoneCode}';
       _regionController = TextEditingController(text: _countryName);
       _phoneController = TextEditingController(text: _phoneCode);
       notifyListeners();

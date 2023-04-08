@@ -16,7 +16,7 @@ class SignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return ChangeNotifierProvider<SingUpPageBloc>(
       create: (_)=> SingUpPageBloc(),
       child: Consumer<SingUpPageBloc>(
         builder: (context, bloc, child) =>  Form(

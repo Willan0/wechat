@@ -1,10 +1,12 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:wechat/data/data_apply/fire_base_abs.dart';
 import 'package:wechat/data/data_apply/fire_base_impl.dart';
 import 'package:wechat/data/vos/user_vo/user_vo.dart';
 import 'package:wechat/utils/extension.dart';
+import 'package:wechat/widgets/easy_icon.dart';
 import 'package:wechat/widgets/easy_text.dart';
 
 import '../constant/color.dart';
@@ -127,6 +129,15 @@ class _FloatingActionButtonViewState extends State<FloatingActionButtonView> {
       child:  Icon(Icons.qr_code_scanner,),
       onPressed: (){
         showDialog(context: context, builder: (context) => Scaffold(
+          appBar:AppBar(
+            backgroundColor: kPrimaryBlackColor,
+            leading: EasyIcon(
+              icon: CupertinoIcons.clear,iconSize: kFi20x,
+              onPressed: (){
+                context.previousScreen(context);
+              },
+            ),
+          ),
           backgroundColor: kBlackTransparent,
           body: Center(
             child: SizedBox(

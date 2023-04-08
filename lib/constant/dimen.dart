@@ -19,6 +19,7 @@ const double kWh270x = 20;
 // margin and padding
 const double kMp5x = 5;
 const double kMp10x = 10;
+const double kMp13x = 13;
 const double kMp20x = 20;
 const double kMp80x = 80;
 const double kMp100x = 100;

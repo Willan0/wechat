@@ -5,6 +5,7 @@ import 'package:wechat/pages/loginAndSignUp_pages/login_singUp_page.dart';
 import 'package:wechat/pages/nav_pages/bottom_nav_page.dart';
 import 'package:wechat/utils/extension.dart';
 
+import '../constant/color.dart';
 import '../constant/duration.dart';
 import '../data/data_apply/fire_base_abs.dart';
 import '../data/data_apply/fire_base_impl.dart';
@@ -45,6 +46,7 @@ class _SplashPageState extends State<SplashPage> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: EasyText(
+                  color: kPrimaryBlackColor,
                   text: kAppName,
                   fontSize: kFi30x,
                   fontWeight: FontWeight.w600,
@@ -56,6 +58,7 @@ class _SplashPageState extends State<SplashPage> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: EasyText(
+                  color:kPrimaryBlackColor,
                   text: kAppVersion,
                   fontWeight: FontWeight.w400,
                 ),

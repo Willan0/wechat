@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wechat/constant/color.dart';
 import 'package:wechat/constant/dimen.dart';
-import 'package:wechat/data/data_apply/fire_base_abs.dart';
-import 'package:wechat/data/data_apply/fire_base_impl.dart';
 import 'package:wechat/data/vos/chat_vo/chat_vo.dart';
 import 'package:wechat/data/vos/user_vo/user_vo.dart';
 import 'package:wechat/utils/extension.dart';
@@ -10,235 +9,185 @@ import 'package:wechat/widgets/easy_icon.dart';
 import 'package:wechat/widgets/easy_text.dart';
 import 'package:wechat/widgets/easy_text_form_field.dart';
 
-class ConservationPage extends StatefulWidget {
+import '../bloc/conservation_bloc.dart';
+
+class ConservationPage extends StatelessWidget {
   const ConservationPage({Key? key, required this.contactUser})
       : super(key: key);
   final UserVO contactUser;
 
   @override
-  State<ConservationPage> createState() => _ConservationPageState();
-}
-
-class _ConservationPageState extends State<ConservationPage> {
-  final FireBaseApply _fireBaseApply = FireBaseApplyIMPL();
-  UserVO? currentUser;
-  TextEditingController _chatController = TextEditingController();
-  bool _sendMessageCheck = false;
-  List<ChatVO> chatMessages = [];
-  String message = '';
-
-  @override
-  void initState() {
-    UserVO? user = _fireBaseApply.getUserInfoFromAuth();
-    _fireBaseApply
-        .getUserVO(user.id ?? '')
-        .then((value) => currentUser = value);
-
-    _fireBaseApply
-        .getChattingMessage(user.id ?? '', widget.contactUser.id ?? '')
-        .listen((event) {
-      setState(() {
-        chatMessages = event ?? [];
-      });
-    });
-
-    super.initState();
-  }
-
-  void sendMessage(String id) {
-    var contactUserId = widget.contactUser.id ?? '';
-    if (id == contactUserId) {
-      ChatVO chatVO = ChatVO(
-          DateTime.now().microsecondsSinceEpoch.toString(),
-          '',
-          message,
-          currentUser?.userName ?? '',
-          currentUser?.file ?? '',
-          DateTime.now().toString(),
-          currentUser?.id ?? '',
-          'video_file');
-      _fireBaseApply.createChatting(
-          currentUser?.id ?? '', widget.contactUser.id ?? '', chatVO);
-      _fireBaseApply.createChatting(
-          widget.contactUser.id ?? '', currentUser?.id ?? '', chatVO);
-    }
-    _chatController.clear();
-    _sendMessageCheck = false;
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _chatController.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: kSecondaryBlackColor,
-        title: EasyText(
-          text: widget.contactUser.userName ?? '',
-          fontSize: kFi17x,
-        ),
-        centerTitle: false,
-        leading: EasyIcon(
-          icon: Icons.arrow_back,
-          onPressed: () {
-            context.previousScreen(context);
-          },
-          iconSize: kFi25x,
-        ),
-        actions: [
-          EasyIcon(
-            icon: Icons.phone,
-            onPressed: () {},
-            color: kPrimaryColor,
-            iconSize: kFi25x,
+    return ChangeNotifierProvider<ConservationPageBloc>(
+      create: (context) => ConservationPageBloc(contactUser.id),
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: kSecondaryBlackColor,
+            title: EasyText(
+              text: contactUser.userName ?? '',
+              fontSize: kFi17x,
+            ),
+            centerTitle: false,
+            leading: EasyIcon(
+              icon: Icons.arrow_back,
+              onPressed: () {
+                context.previousScreen(context);
+              },
+              iconSize: kFi25x,
+            ),
+            actions: [
+              EasyIcon(
+                icon: Icons.phone,
+                onPressed: () {},
+                color: kPrimaryColor,
+                iconSize: kFi25x,
+              ),
+              EasyIcon(
+                icon: Icons.video_call,
+                onPressed: () {},
+                color: kPrimaryColor,
+                iconSize: kFi25x,
+              ),
+              const SizedBox(
+                width: kMp10x,
+              )
+            ],
           ),
-          EasyIcon(
-            icon: Icons.video_call,
-            onPressed: () {},
-            color: kPrimaryColor,
-            iconSize: kFi25x,
-          ),
-          const SizedBox(
-            width: kMp10x,
-          )
-        ],
-      ),
-      body: chatMessages.isNotEmpty
-          ? SizedBox(
-              width: getWidth(context),
-              height: getHeight(context),
-              child: Padding(
-                padding: const EdgeInsets.only(left: kMp20x,right:kMp20x,bottom: kMp5x),
-                child: Column(
+          body: SizedBox(
+            width: getWidth(context),
+            height: getHeight(context),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kMp5x),
+              child: Consumer<ConservationPageBloc>(
+                builder: (context, value, child) => Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    /// show message view
+
                     Expanded(
-                      child: chatMessages.isNotEmpty
-                          ? ChatListView(
+                        child: Selector<ConservationPageBloc, List<ChatVO>>(
+                          selector: (context, selector) => selector.chatMessages,
+                          builder: (context, chatMessages, child) =>
+                          chatMessages.isNotEmpty
+                              ? ChatListView(
                               chatMessages: chatMessages.reversed.toList(),
-                              widget: widget)
-                          : const Center(
-                              child: EasyText(
-                                text: 'Send Hi your friend',
-                                color: kPrimaryBlackColor,
-                              ),
-                            ),
-                    ),
+                              contactUserId: contactUser.id ?? '',)
+                              : const Center(
+                                child: CircularProgressIndicator(),
+                          ),
+                        )),
 
                     // send message View
-                    Padding(
-                      padding:
-                          EdgeInsets.only(left: _sendMessageCheck ? kMp10x : 0),
-                      child: Row(
-                        children: [
-                          _sendMessageCheck
-                              ? SizedBox(
-                                  width: 0,
-                                )
-                              : EasyIcon(
-                                  iconSize: kFi30x,
-                                  icon: Icons.camera_alt,
-                                  onPressed: () {},
-                                  color: kSecondaryBlackColor,
-                                ),
-                          _sendMessageCheck
-                              ? SizedBox(
-                                  width: 0,
-                                )
-                              : EasyIcon(
-                                  iconSize: kFi30x,
-                                  icon: Icons.image,
-                                  onPressed: () {},
-                                  color: kSecondaryBlackColor,
-                                ),
-                          _sendMessageCheck
-                              ? SizedBox(
-                                  width: 0,
-                                )
-                              : EasyIcon(
-                                  iconSize: kFi30x,
-                                  icon: Icons.keyboard_voice,
-                                  onPressed: () {},
-                                  color: kSecondaryBlackColor,
-                                ),
-                          Expanded(
-                            child: Container(
-                              alignment: AlignmentDirectional.center,
-                              height: kWh40x,
-                              decoration: const BoxDecoration(
-                                color: kSecondaryBlackColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(kRi20x)),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: _sendMessageCheck ? 0 : kMp20x,
-                                    right: kMp10x),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                        child: EasyTextFormField(
-                                            validate: (value) => null,
-                                            controller: _chatController,
-                                            hintText: 'Message',
-                                            onTap: () {},
-                                            focusedInputBorder:
-                                                OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                kRi20x)),
-                                                    borderSide: BorderSide(
-                                                        width: 0,
-                                                        color:
-                                                            Colors.transparent)),
-                                            onChanged: (text) {
-                                              if (text.isNotEmpty) {
-                                                _sendMessageCheck = true;
-                                              } else {
-                                                _sendMessageCheck = false;
-                                              }
-                                              setState(() {});
-                                              setState(() {
-                                                message = text;
-                                              });
-                                            })),
-                                    SizedBox(
-                                        width: kMp20x,
-                                        child: EasyIcon(
-                                          icon: Icons.emoji_emotions,
-                                          onPressed: () {},
-                                          iconSize: kFi17x,
-                                        )),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          EasyIcon(
-                              icon: _sendMessageCheck
-                                  ? Icons.send
-                                  : Icons.waving_hand_sharp,
-                              onPressed: () =>
-                                  sendMessage(widget.contactUser.id ?? ''),
-                              color: kSecondaryBlackColor,
-                              iconSize: kFi30x)
-                        ],
-                      ),
-                    ),
+                    SendMessageView(
+                        chatController:
+                        context.getConservationBlocInstance().chatController,),
                   ],
                 ),
               ),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
             ),
+          )),
+    );
+  }
+}
+
+
+class SendMessageView extends StatelessWidget {
+  const SendMessageView({
+    Key? key,
+    required TextEditingController chatController,
+  })  : _chatController = chatController,
+        super(key: key);
+
+  final TextEditingController _chatController;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<ConservationPageBloc, bool>(
+      selector: (_, selector) => selector.sendMessageCheck,
+      builder: (context, sendMessageCheck, child) => Padding(
+        padding: EdgeInsets.only(left: sendMessageCheck ? kMp10x : 0),
+        child: Row(
+          children: [
+            sendMessageCheck
+                ? SizedBox(
+                    width: 0,
+                  )
+                : EasyIcon(
+                    iconSize: kFi30x,
+                    icon: Icons.camera_alt,
+                    onPressed: () {},
+                    color: kSecondaryBlackColor,
+                  ),
+            sendMessageCheck
+                ? SizedBox(
+                    width: 0,
+                  )
+                : EasyIcon(
+                    iconSize: kFi30x,
+                    icon: Icons.image,
+                    onPressed: () {},
+                    color: kSecondaryBlackColor,
+                  ),
+            sendMessageCheck
+                ? SizedBox(
+                    width: 0,
+                  )
+                : EasyIcon(
+                    iconSize: kFi30x,
+                    icon: Icons.keyboard_voice,
+                    onPressed: () {},
+                    color: kSecondaryBlackColor,
+                  ),
+            Expanded(
+              child: Container(
+                alignment: AlignmentDirectional.center,
+                height: kWh40x,
+                decoration: const BoxDecoration(
+                  color: kSecondaryBlackColor,
+                  borderRadius: BorderRadius.all(Radius.circular(kRi20x)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: sendMessageCheck ? 0 : kMp20x, right: kMp10x),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: EasyTextFormField(
+                              validate: (value) => null,
+                              controller: _chatController,
+                              hintText: 'Message',
+                              onTap: () {},
+                              focusedInputBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(kRi20x)),
+                                  borderSide: BorderSide(
+                                      width: 0, color: Colors.transparent)),
+                              onChanged: (text) => context
+                                  .getConservationBlocInstance()
+                                  .checkMessage(text))),
+                      SizedBox(
+                          width: kMp20x,
+                          child: EasyIcon(
+                            icon: Icons.emoji_emotions,
+                            onPressed: () {},
+                            iconSize: kFi17x,
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            EasyIcon(
+                icon: sendMessageCheck ? Icons.send : Icons.waving_hand_sharp,
+                onPressed: () =>
+                    context.getConservationBlocInstance().sendMessage(),
+                color: kSecondaryBlackColor,
+                iconSize: kFi30x)
+          ],
+        ),
+      ),
     );
   }
 }
@@ -246,50 +195,65 @@ class _ConservationPageState extends State<ConservationPage> {
 class ChatListView extends StatelessWidget {
   const ChatListView({
     Key? key,
-    required this.chatMessages,
-    required this.widget,
+    required this.chatMessages, required this.contactUserId,
+
   }) : super(key: key);
 
   final List<ChatVO> chatMessages;
-  final ConservationPage widget;
+final String contactUserId ;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    return chatMessages.length<1
+        ?
+    const Center(
+      child: EasyText(
+        text: 'Send Hi your friend',
+        color: kPrimaryBlackColor,
+      ),
+    )
+        :
+      ListView.separated(
         reverse: true,
         itemBuilder: (context, index) =>
-            (chatMessages[index].user_id != widget.contactUser.id)
+            (chatMessages[index].user_id != contactUserId)
                 ?
 
                 ///current user
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                          padding: const EdgeInsets.all(kMp13x),
-                          decoration: BoxDecoration(
-                              color: kSecondaryBlackColor,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(kRi20x),
-                                  topRight: Radius.circular(kRi10x),
-                                  bottomLeft: Radius.circular(kRi10x))),
-                          child: Center(
-                            child: EasyText(
-                              text: chatMessages[index].message ?? '',
-                              color: kPrimaryColor,
-                              textAlign: TextAlign.right,
-                            ),
-                          )),
-                    ],
-                  )
+                 Row(
+                   mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(width: 100,),
+                        Flexible(
+                          child: Container(
+                              margin: EdgeInsets.only(right: kMp5x),
+                              padding: const EdgeInsets.all(kMp13x),
+                              decoration: BoxDecoration(
+                                  color: kSecondaryBlackColor,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(kRi20x),
+                                      topRight: Radius.circular(kRi10x),
+                                      bottomLeft: Radius.circular(kRi10x))),
+                              child: Center(
+                                child: EasyText(
+                                  text: chatMessages[index].message ?? '',
+                                  color: kPrimaryColor,
+                                ),
+                              )),
+                        ),
+                      ],
+                    )
+
                 :
 
                 /// contact user
                 Row(
-                 mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(kMp13x),
+                          margin: EdgeInsets.only(left: kMp5x),
+                          padding: const EdgeInsets.all(kMp13x),
                           decoration: BoxDecoration(
                               color: kSecondaryBlackColor,
                               borderRadius: BorderRadius.only(
@@ -304,6 +268,7 @@ class ChatListView extends StatelessWidget {
                           )),
                     ],
                   ),
+
         separatorBuilder: (context, index) => const SizedBox(
               height: kMp5x,
             ),

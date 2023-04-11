@@ -7,9 +7,9 @@ import 'package:wechat/data/vos/user_vo/user_vo.dart';
 
 import '../data/data_apply/fire_base_impl.dart';
 
-class SingUpPageBloc extends ChangeNotifier{
+class SingUpPageBloc extends ChangeNotifier {
   // state variable
-  bool _isDispose= false;
+  bool _isDispose = false;
   bool _isVisibility = true;
   bool _isAgree = false;
 
@@ -29,10 +29,7 @@ class SingUpPageBloc extends ChangeNotifier{
   File? _selectFile;
   String? _filePath;
 
-
   bool get isDispose => _isDispose;
-
-
 
   // getter
   // user info
@@ -48,54 +45,51 @@ class SingUpPageBloc extends ChangeNotifier{
   TextEditingController get getNameController => _nameController;
   TextEditingController get getPhoneController => _phoneController;
   TextEditingController get getPasswordController => _passwordController;
-  TextEditingController get getRegionController  => _regionController;
+  TextEditingController get getRegionController => _regionController;
   TextEditingController get emailController => _emailController;
   File? get getSelectFile => _selectFile;
   String? get getFilePath => _filePath;
 
   // setter
-  set file(String file) =>_file = file;
-  set setUserName(String username) =>
-    _userName = username;
+  set file(String file) => _file = file;
+  set setUserName(String username) => _userName = username;
 
-  set setCountryName(String countryName) =>
-    _countryName = countryName;
-  set setPhoneCode(String phoneCode) =>
-    _phoneCode = phoneCode;
+  set setCountryName(String countryName) => _countryName = countryName;
+  set setPhoneCode(String phoneCode) => _phoneCode = phoneCode;
 
-  set setPassword(String password) =>
-    _password = password;
+  set setPassword(String password) => _password = password;
 
-  set setEmail(String email) =>
-    _email = email;
+  set setEmail(String email) => _email = email;
 
   // state instance
 
   final FireBaseApply _fireBaseApply = FireBaseApplyIMPL();
 
-
-  Future register(String file,String userName,String countryName,String phoneCode,String password){
-
-    UserVO userVO = UserVO('id', file, userName, countryName, phoneCode, password, _email,'');
+  Future register(String file, String userName, String countryName,
+      String phoneCode, String password) {
+    UserVO userVO = UserVO(
+        'id', file, userName, countryName, phoneCode, password, _email, '');
     return _fireBaseApply.createUser(userVO);
   }
 
-  void setVisibility(){
-    if(_isVisibility == true){
+  void setVisibility() {
+    if (_isVisibility == true) {
       _isVisibility = false;
-    }else{
+    } else {
       _isVisibility = true;
     }
     notifyListeners();
   }
-  void setAgree(){
-    if(_isAgree == false){
+
+  void setAgree() {
+    if (_isAgree == false) {
       _isAgree = true;
-    }else{
+    } else {
       _isAgree = false;
     }
     notifyListeners();
   }
+
   void setSelectFile(File? file) {
     if (file != null) {
       _selectFile = file;
@@ -104,26 +98,29 @@ class SingUpPageBloc extends ChangeNotifier{
       notifyListeners();
     }
   }
-  void getCountry(context){
-    showCountryPicker(context: context, onSelect: (value) {
-      _countryName = value.displayName;
-      _phoneCode = '+${value.phoneCode}';
-      _regionController = TextEditingController(text: _countryName);
-      _phoneController = TextEditingController(text: _phoneCode);
-      notifyListeners();
-    },);
 
+  void getCountry(context) {
+    showCountryPicker(
+      context: context,
+      onSelect: (value) {
+        _countryName = value.displayName;
+        _phoneCode = '+${value.phoneCode}';
+        _regionController = TextEditingController(text: _countryName);
+        _phoneController = TextEditingController(text: _phoneCode);
+        notifyListeners();
+      },
+    );
   }
+
   @override
   void notifyListeners() {
-    // TODO: implement notifyListeners
-    if(!_isDispose){
+    if (!_isDispose) {
       super.notifyListeners();
     }
   }
+
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _isDispose = true;
     _nameController.dispose();

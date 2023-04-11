@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wechat/data/data_apply/fire_base_abs.dart';
 import 'package:wechat/data/data_apply/fire_base_impl.dart';
 
-class SignInBloc extends ChangeNotifier{
-  bool _isDispose= false;
+class SignInBloc extends ChangeNotifier {
+  bool _isDispose = false;
   bool _isVisibility = true;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -16,34 +16,27 @@ class SignInBloc extends ChangeNotifier{
   TextEditingController get getPasswordController => _passwordController;
   GlobalKey<FormState> get getGlobalKey => _globalKey;
 
+  set password(String password) => _password = password;
 
-  set password(String password) =>
-    _password = password;
-
-  set email(String email) =>
-    _email = email;
+  set email(String email) => _email = email;
 
   // state instance
   final FireBaseApply _fireBaseApply = FireBaseApplyIMPL();
 
-  Future Login(){
+  Future Login() {
     return _fireBaseApply.login(_email, _password);
   }
 
-
   @override
   void notifyListeners() {
-    // TODO: implement notifyListeners
-    if(!_isDispose){
+    if (!_isDispose) {
       super.notifyListeners();
     }
   }
+
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _isDispose = true;
   }
-
-
 }

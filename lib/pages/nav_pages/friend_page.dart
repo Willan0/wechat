@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:wechat/constant/color.dart';
 import 'package:wechat/data/data_apply/fire_base_abs.dart';
@@ -24,7 +22,6 @@ class _FriendPageState extends State<FriendPage> {
   List<UserVO> contacts = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     userVO = _fireBaseApply.getUserInfoFromAuth();
     String currentUserId = userVO?.id ?? '';
@@ -50,7 +47,9 @@ class _FriendPageState extends State<FriendPage> {
           ? ListView.separated(
               itemBuilder: (context, index) {
                 print(contacts[index].file ?? "");
-                return FriendView(contacts: contacts[index],);
+                return FriendView(
+                  contacts: contacts[index],
+                );
               },
               separatorBuilder: (context, index) => const SizedBox(
                     height: kMp10x,
@@ -75,25 +74,22 @@ class FriendView extends StatelessWidget {
 
   final UserVO contacts;
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        context.nextScreen(context,ConservationPage(contactUser: contacts,));
+      onTap: () {
+        context.nextScreen(
+            context,
+            ConservationPage(
+              contactUser: contacts,
+            ));
       },
       child: ListTile(
         leading: CircleAvatar(
             radius: kRi20x,
             child: ClipRRect(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(kRi20x)),
-                child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: FileImage(File(
-                                contacts.file ?? ''))))))),
+                borderRadius: const BorderRadius.all(Radius.circular(kRi20x)),
+                child: Container())),
         title: EasyText(
           text: contacts.userName ?? '',
           color: kPrimaryBlackColor,

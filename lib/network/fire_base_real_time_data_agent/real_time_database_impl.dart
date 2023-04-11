@@ -31,4 +31,13 @@ class RealTimeDataBaseImpl extends RealTimeDataBaseAbs{
           }).toList();
     });
   }
+
+  @override
+  Stream<List<Object?>> getChattingMessageContactId(String currentUserId) {
+    return _realTimeDataBase.child(kRootNodeForContactAndMessage)
+        .child(currentUserId)
+        .onValue.map((event) {
+          return event.snapshot.children.map((e) => e.value).toList();
+        });
+  }
 }

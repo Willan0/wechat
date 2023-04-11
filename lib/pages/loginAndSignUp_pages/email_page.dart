@@ -16,7 +16,14 @@ import '../../widgets/easy_text_form_field.dart';
 import '../../widgets/loading_dialog.dart';
 
 class EmailPage extends StatelessWidget {
-  const EmailPage({Key? key, required this.file, required this.userName, required this.countryName, required this.phoneCode, required this.password}) : super(key: key);
+  const EmailPage(
+      {Key? key,
+      required this.file,
+      required this.userName,
+      required this.countryName,
+      required this.phoneCode,
+      required this.password})
+      : super(key: key);
 
   final String file;
   final String userName;
@@ -26,21 +33,23 @@ class EmailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  ChangeNotifierProvider<SingUpPageBloc>(
-      create: (_)=> SingUpPageBloc(),
+    return ChangeNotifierProvider<SingUpPageBloc>(
+      create: (_) => SingUpPageBloc(),
       child: Consumer<SingUpPageBloc>(
-        builder: (context, bloc, child) =>
-       Form(
+        builder: (context, bloc, child) => Form(
           key: bloc.getGlobalKey,
           child: Scaffold(
             backgroundColor: kPrimaryBlackColor,
             appBar: AppBar(
               leading: EasyIcon(
-              icon: CupertinoIcons.clear,
+                icon: CupertinoIcons.clear,
                 iconSize: kFi20x,
-              onPressed: (){context.previousScreen(context);},
+                onPressed: () {
+                  context.previousScreen(context);
+                },
+              ),
+              backgroundColor: kPrimaryBlackColor,
             ),
-            backgroundColor: kPrimaryBlackColor,),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.only(left: kMp10x),
@@ -51,11 +60,18 @@ class EmailPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: kWh230x,),
-                      EasyText(text: kEnterEmail,fontSize: kFi17x,),
-                      SizedBox(height: kMp20x,),
+                      SizedBox(
+                        height: kWh230x,
+                      ),
+                      EasyText(
+                        text: kEnterEmail,
+                        fontSize: kFi17x,
+                      ),
+                      SizedBox(
+                        height: kMp20x,
+                      ),
                       EasyTextFormField(
-                        validate: (text){
+                        validate: (text) {
                           if ((text?.isEmpty) ?? true) {
                             return kEmailEmpty;
                           }
@@ -64,39 +80,52 @@ class EmailPage extends StatelessWidget {
                           }
                           return null;
                         },
-                        onTap: (){},
-                        controller: bloc.emailController, hintText: kEmailEnter,
+                        onTap: () {},
+                        controller: bloc.emailController,
+                        hintText: kEmailEnter,
                         onChanged: (String text) {
                           context.getSignUpBlocInstance().setEmail = text;
                         },
                       ),
-                      SizedBox(height: kWh200x,),
+                      SizedBox(
+                        height: kWh200x,
+                      ),
                       Center(
                         child: EasyButton(
                             width: kWh230x,
                             height: kWh50x,
-                            onPressed: (){
-                          if(bloc.getGlobalKey.currentState?.validate() ?? false){
-                            showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (context) => const LoadingAlertDialogWidget());
-                            context.getSignUpBlocInstance().register(file, userName, countryName, phoneCode, password).then((value) {
-                              context.previousScreen(context);
-                              context.nextReplacement(context, const LoginPage());
-                            }).catchError((error) {
-                              context.previousScreen(context);
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: EasyText(
-                                  text: error.toString(),
-                                  color: kPrimaryTextColor,
-                                ),
-                                backgroundColor: kSecondaryColor,
-                              ));
-                            });;
-
-                          }
-                        }, color: kSecondaryColor, text: 'Done'),
+                            onPressed: () {
+                              if (bloc.getGlobalKey.currentState?.validate() ??
+                                  false) {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) =>
+                                        const LoadingAlertDialogWidget());
+                                context
+                                    .getSignUpBlocInstance()
+                                    .register(file, userName, countryName,
+                                        phoneCode, password)
+                                    .then((value) {
+                                  context.previousScreen(context);
+                                  context.nextReplacement(
+                                      context, const LoginPage());
+                                }).catchError((error) {
+                                  context.previousScreen(context);
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: EasyText(
+                                      text: error.toString(),
+                                      color: kPrimaryTextColor,
+                                    ),
+                                    backgroundColor: kSecondaryColor,
+                                  ));
+                                });
+                                ;
+                              }
+                            },
+                            color: kSecondaryColor,
+                            text: 'Done'),
                       )
                     ],
                   ),

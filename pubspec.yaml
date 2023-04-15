@@ -22,6 +22,7 @@ dependencies:
   country_picker: ^2.0.19
   qr_flutter: ^4.0.0
   qr_code_scanner: ^1.0.1
+  firebase_storage: ^11.0.15
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.12.0

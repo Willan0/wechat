@@ -4,6 +4,7 @@ import 'package:wechat/data/data_apply/fire_base_abs.dart';
 import 'package:wechat/data/data_apply/fire_base_impl.dart';
 import 'package:wechat/pages/conservation_page.dart';
 import 'package:wechat/utils/extension.dart';
+import 'package:wechat/widgets/easy_image.dart';
 import 'package:wechat/widgets/easy_text.dart';
 
 import '../../constant/dimen.dart';
@@ -59,6 +60,7 @@ class _FriendPageState extends State<FriendPage> {
               child: SizedBox(
                 child: EasyText(
                   text: 'Currently,There is no friend',
+                  color: kPrimaryBlackColor,
                 ),
               ),
             ),
@@ -84,19 +86,26 @@ class FriendView extends StatelessWidget {
               contactUser: contacts,
             ));
       },
-      child: ListTile(
-        leading: CircleAvatar(
-            radius: kRi20x,
-            child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(kRi20x)),
-                child: Container())),
-        title: EasyText(
-          text: contacts.userName ?? '',
-          color: kPrimaryBlackColor,
+      child: Card(
+        shape: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(kRi10x)),
+          borderSide: BorderSide(color: kPrimaryColor),
         ),
-        subtitle: EasyText(
-          text: contacts.phoneNumber ?? '',
-          color: kPrimaryBlackColor,
+        child: ListTile(
+          leading: CircleAvatar(
+              radius: kRi20x,
+              child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(kRi20x)),
+                  child: EasyImage(image: contacts.file ?? '',))),
+          title: EasyText(
+            text: contacts.userName ?? '',
+            fontSize: kFi17x,
+            color: kPrimaryBlackColor,
+          ),
+          subtitle: EasyText(
+            text: contacts.phoneNumber ?? '',
+            color: kPrimaryBlackColor,
+          ),
         ),
       ),
     );

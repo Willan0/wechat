@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:wechat/constant/string.dart';
 import 'package:wechat/data/data_apply/fire_base_abs.dart';
 import 'package:wechat/data/vos/user_vo/user_vo.dart';
+import 'package:wechat/network/firebase_storage_data_agent/firebase_storage_impl.dart';
 
 import '../data/data_apply/fire_base_impl.dart';
+import '../network/firebase_storage_data_agent/firebase_storage_abs.dart';
 
 class SingUpPageBloc extends ChangeNotifier {
   // state variable
@@ -14,7 +17,7 @@ class SingUpPageBloc extends ChangeNotifier {
   bool _isAgree = false;
 
   // user info
-  String _file = '';
+  File? _selectFile;
   String _userName = '';
   String _countryName = '';
   String _phoneCode = '';
@@ -26,7 +29,6 @@ class SingUpPageBloc extends ChangeNotifier {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _regionController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
-  File? _selectFile;
   String? _filePath;
 
   bool get isDispose => _isDispose;
@@ -36,7 +38,6 @@ class SingUpPageBloc extends ChangeNotifier {
   String get email => _email;
   String get getCountryName => _countryName;
   String get getPhoneCode => _phoneCode;
-  String get file => _file;
   String get userName => _userName;
   String get password => _password;
   bool get getIsVisibility => _isVisibility;
@@ -48,10 +49,10 @@ class SingUpPageBloc extends ChangeNotifier {
   TextEditingController get getRegionController => _regionController;
   TextEditingController get emailController => _emailController;
   File? get getSelectFile => _selectFile;
-  String? get getFilePath => _filePath;
+ String? get getFilePath => _filePath;
 
   // setter
-  set file(String file) => _file = file;
+
   set setUserName(String username) => _userName = username;
 
   set setCountryName(String countryName) => _countryName = countryName;
@@ -64,11 +65,17 @@ class SingUpPageBloc extends ChangeNotifier {
   // state instance
 
   final FireBaseApply _fireBaseApply = FireBaseApplyIMPL();
+  final FirebaseStorageStore _fireStore = FirebaseStorageStoreImpl();
 
-  Future register(String file, String userName, String countryName,
-      String phoneCode, String password) {
+  Future register(File? file, String userName, String countryName,
+      String phoneCode, String password) async{
     UserVO userVO = UserVO(
-        'id', file, userName, countryName, phoneCode, password, _email, '');
+        'id', kDefaultImage, userName, countryName, phoneCode, password, _email, '');
+    if(file!=null){
+    String image = await _fireStore.uploadFileToFireStorage(file);
+    userVO.file = image;
+    return _fireBaseApply.createUser(userVO);
+    }
     return _fireBaseApply.createUser(userVO);
   }
 
@@ -93,7 +100,7 @@ class SingUpPageBloc extends ChangeNotifier {
   void setSelectFile(File? file) {
     if (file != null) {
       _selectFile = file;
-      _file = _selectFile.toString();
+      _filePath = file.toString();
       // _post=true;
       notifyListeners();
     }

@@ -6,5 +6,5 @@ abstract class RealTimeDataBaseAbs{
 
   Stream<List<ChatVO>?> getChattingMessage(String currentUserId,String chattingUserId);
 
-  Stream<List<Object?>> getChattingMessageContactId(String currentUserId);
+  Stream<List<String>> getChattingMessageContactId(String currentUserId);
 }

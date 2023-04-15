@@ -6,6 +6,7 @@ import 'package:wechat/data/vos/chat_vo/chat_vo.dart';
 import 'package:wechat/data/vos/user_vo/user_vo.dart';
 import 'package:wechat/utils/extension.dart';
 import 'package:wechat/widgets/easy_icon.dart';
+import 'package:wechat/widgets/easy_image.dart';
 import 'package:wechat/widgets/easy_text.dart';
 import 'package:wechat/widgets/easy_text_form_field.dart';
 
@@ -17,16 +18,25 @@ class ConservationPage extends StatelessWidget {
   final UserVO contactUser;
 
   @override
-  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ConservationPageBloc>(
       create: (context) => ConservationPageBloc(contactUser.id),
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: kSecondaryBlackColor,
-            title: EasyText(
-              text: contactUser.userName ?? '',
-              fontSize: kFi17x,
+            title: Row(
+              children: [
+                CircleAvatar(
+                  radius: kRi20x,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(kRi20x)),
+                        child: EasyImage(image: contactUser.file ?? ''))),
+                SizedBox(width: kMp5x,),
+                EasyText(
+                  text: contactUser.userName ?? '',
+                  fontSize: kFi17x,
+                ),
+              ],
             ),
             centerTitle: false,
             leading: EasyIcon(
@@ -74,7 +84,7 @@ class ConservationPage extends StatelessWidget {
                               chatMessages: chatMessages.reversed.toList(),
                               contactUserId: contactUser.id ?? '',)
                               : const Center(
-                                child: CircularProgressIndicator(),
+                                child: EasyText(text: 'Send Hi to your friend'),
                           ),
                         )),
 
@@ -207,10 +217,7 @@ final String contactUserId ;
     return chatMessages.length<1
         ?
     const Center(
-      child: EasyText(
-        text: 'Send Hi your friend',
-        color: kPrimaryBlackColor,
-      ),
+      child: CircularProgressIndicator(),
     )
         :
       ListView.separated(
@@ -220,30 +227,32 @@ final String contactUserId ;
                 ?
 
                 ///current user
-                 Row(
-                   mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(width: 100,),
-                        Flexible(
-                          child: Container(
-                              margin: EdgeInsets.only(right: kMp5x),
-                              padding: const EdgeInsets.all(kMp13x),
-                              decoration: BoxDecoration(
-                                  color: kSecondaryBlackColor,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(kRi20x),
-                                      topRight: Radius.circular(kRi10x),
-                                      bottomLeft: Radius.circular(kRi10x))),
-                              child: Center(
-                                child: EasyText(
-                                  text: chatMessages[index].message ?? '',
-                                  color: kPrimaryColor,
-                                ),
-                              )),
-                        ),
-                      ],
-                    )
+                 LayoutBuilder(
+                   builder: (context,boxConstraint) {
+                     return Container(
+                         width: boxConstraint.maxWidth < MediaQuery.of(context).size.width * 0.8 ? null : MediaQuery.of(context).size.width * 0.8,
+                         margin: EdgeInsets.only(right: kMp5x),
+                         padding: const EdgeInsets.all(kMp13x),
+                         decoration: BoxDecoration(
+                             color: kSecondaryBlackColor,
+                             borderRadius: BorderRadius.only(
+                                 topLeft: Radius.circular(kRi20x),
+                                 topRight: Radius.circular(kRi10x),
+                                 bottomLeft: Radius.circular(kRi10x))),
+                         // constraints: BoxConstraints(maxWidth: maxWidth),
+                         child: Row(
+                           children: [
+                             Flexible(
+                               child: Center(
+                                 child: EasyText(
+                                   text: chatMessages[index].message ?? '',
+                                   color: kPrimaryColor,
+                                 ),
+                               ),
+                             ),
+                           ],
+                         ));
+                   })
 
                 :
 

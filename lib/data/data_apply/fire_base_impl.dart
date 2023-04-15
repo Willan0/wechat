@@ -50,5 +50,7 @@ class FireBaseApplyIMPL extends FireBaseApply{
   Stream<List<ChatVO>?> getChattingMessage(String currentUserId, String chattingUserId)
  => _realTimeDataBase.getChattingMessage(currentUserId, chattingUserId);
 
+  @override
+  Stream<List<String>> getChattingMessageContactId(String currentUserId) => _realTimeDataBase.getChattingMessageContactId(currentUserId);
 
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +27,7 @@ class EmailPage extends StatelessWidget {
       required this.password})
       : super(key: key);
 
-  final String file;
+  final File? file;
   final String userName;
   final String countryName;
   final String phoneCode;

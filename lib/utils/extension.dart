@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wechat/bloc/home_page_bloc.dart';
 import 'package:wechat/bloc/sign_in_bloc.dart';
 import 'package:wechat/bloc/sign_up_bloc.dart';
 
@@ -30,6 +31,7 @@ extension ContextExtension on BuildContext {
   SingUpPageBloc getSignUpBlocInstance() => read<SingUpPageBloc>();
   SignInBloc getSignInBlocInstance() => read<SignInBloc>();
   ConservationPageBloc getConservationBlocInstance() => read<ConservationPageBloc>();
+  HomePageBloc getHomePageBloc() => read<HomePageBloc>();
   // ProfileBloc getProfileBlocInstance() => read<ProfileBloc>();
 
 }

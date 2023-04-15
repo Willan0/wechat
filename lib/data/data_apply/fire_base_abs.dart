@@ -22,4 +22,7 @@ abstract class FireBaseApply{
 
   Stream<List<ChatVO>?> getChattingMessage(String currentUserId,String chattingUserId);
 
+  Stream<List<String>> getChattingMessageContactId(String currentUserId);
+
+
 }

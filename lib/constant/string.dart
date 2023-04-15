@@ -52,3 +52,4 @@ const String kNoteEmail = 'The above email address is only used for login verifi
 const String kRootNodeForUser = 'users';
 const String kRootNodeForContacts = 'contacts';
 const String kRootNodeForContactAndMessage = 'contactsAndMessages';
+const String kPathForImage = 'upload';

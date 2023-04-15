@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wechat/constant/color.dart';
@@ -12,7 +14,7 @@ import '../../widgets/easy_icon.dart';
 
 class PrivacyAndPolicyPage extends StatefulWidget {
   const PrivacyAndPolicyPage({Key? key, required this.file, required this.userName, required this.countryName, required this.phoneCode, required this.password}) : super(key: key);
-  final String file;
+  final File? file;
   final String userName;
   final String countryName;
   final String phoneCode;
@@ -91,9 +93,12 @@ class _PrivacyAndPolicyPageState extends State<PrivacyAndPolicyPage> {
                   ),
                   SizedBox(height: kMp20x,),
                   EasyButton(
-                      onPressed: (){
+                      onPressed: isAgree?
+                          (){
                         context.nextScreen(context, EmailPage(file: widget.file, userName: widget.userName, countryName: widget.countryName, phoneCode: widget.phoneCode, password: widget.password));
-                      },
+                      }
+                      :
+                          (){},
                       color: isAgree?kSecondaryColor:kPrimaryBlackShadowColor,
                       text: kNext,
                     height: kWh50x,

@@ -225,7 +225,12 @@ class PrivacyAndPolicy extends StatelessWidget {
             EasyButton(width:kWh230x,height: kWh50x,onPressed: isAgree?(){
               var globalKey = context.getSignUpBlocInstance().getGlobalKey;
               if(globalKey.currentState?.validate() ?? false){
-                context.nextScreen(context, PrivacyAndPolicyPage(file: context.getSignUpBlocInstance().file, userName: context.getSignUpBlocInstance().userName, countryName: context.getSignUpBlocInstance().getCountryName, phoneCode: context.getSignUpBlocInstance().getPhoneCode, password: context.getSignUpBlocInstance().password,));
+                context.nextScreen(context, PrivacyAndPolicyPage(
+                  file: context.getSignUpBlocInstance().getSelectFile,
+                  userName: context.getSignUpBlocInstance().userName,
+                  countryName: context.getSignUpBlocInstance().getCountryName,
+                  phoneCode: context.getSignUpBlocInstance().getPhoneCode,
+                  password: context.getSignUpBlocInstance().password,));
               }
             }:(){}, color: isAgree?kSecondaryColor:kPrimaryBlackShadowColor, text: kAcceptButton)
           ],

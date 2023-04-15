@@ -1,24 +1,62 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:wechat/data/data_apply/fire_base_abs.dart';
 import 'package:wechat/data/data_apply/fire_base_impl.dart';
+import 'package:wechat/data/vos/chat_vo/chat_vo.dart';
 import 'package:wechat/data/vos/user_vo/user_vo.dart';
-import 'package:wechat/network/fire_base_real_time_data_agent/real_time_database_abs.dart';
-import 'package:wechat/network/fire_base_real_time_data_agent/real_time_database_impl.dart';
+
 
 class HomePageBloc extends ChangeNotifier{
   bool _isDispose = false;
 
-  List<Object?> contactUsersId = [];
+  List<String> contactUsersId = [];
+  List<UserVO> chatting = [];
+  List<String> userNameList = [];
+  List<String> lastChatIds = [];
+  List<ChatVO> lastChatVOs = [];
+  String finalMessage = '';
 
-  RealTimeDataBaseAbs _realTimeDataBase = RealTimeDataBaseImpl();
   FireBaseApply _realtimeApply = FireBaseApplyIMPL();
   HomePageBloc(){
     UserVO userVO = _realtimeApply.getUserInfoFromAuth();
-    _realTimeDataBase.getChattingMessageContactId(userVO.id ?? '').listen((event) {
-      contactUsersId = event;
-      print('object=====================> $contactUsersId');
-    });
+    String currentUserId = userVO.id ?? '';
+
+   _realtimeApply.getChattingMessageContactId(currentUserId).listen((event) {
+     var temp = event;
+    for(var contactId in temp){
+      if(!(contactUsersId.contains(contactId))){
+        contactUsersId.add(contactId);
+        // print('===================> $contactUsersId');
+      }
+    }
+    for(var id in contactUsersId){
+
+      // get user name and profile
+      _realtimeApply.getUserVO(id).then((value){
+        var userName = value?.userName;
+        if(!(userNameList.contains(userName))){
+          userNameList.add(userName!);
+          chatting.add(value!);
+          // print('=====================> $chatting');
+          notifyListeners();
+        }
+      });
+
+      // get last message
+      _realtimeApply.getChattingMessage(currentUserId, id).listen((event) {
+        var lastChatVO = event?.last;
+        var lastChatId = event?.last.id;
+        if(!(lastChatIds.contains(lastChatId))){
+          lastChatIds.add(lastChatId!);
+          print('===============> $lastChatIds');
+          lastChatVOs.add(lastChatVO!);
+          print('==============> $lastChatVOs');
+          notifyListeners();
+        }
+      });
+    }
+   });
   }
 
   @override

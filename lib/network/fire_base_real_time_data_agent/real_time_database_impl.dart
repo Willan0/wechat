@@ -33,11 +33,13 @@ class RealTimeDataBaseImpl extends RealTimeDataBaseAbs{
   }
 
   @override
-  Stream<List<Object?>> getChattingMessageContactId(String currentUserId) {
-    return _realTimeDataBase.child(kRootNodeForContactAndMessage)
-        .child(currentUserId)
-        .onValue.map((event) {
-          return event.snapshot.children.map((e) => e.value).toList();
-        });
+  Stream<List<String>> getChattingMessageContactId(String currentUserId) {
+    return _realTimeDataBase
+        .child(kRootNodeForContactAndMessage)
+        .child(currentUserId).onValue.map((event) {
+      final dataSnapshot = event.snapshot;
+      final contacts = Map<String, dynamic>.from(dataSnapshot.value as Map );
+      return contacts.keys.toList();
+    });
   }
 }

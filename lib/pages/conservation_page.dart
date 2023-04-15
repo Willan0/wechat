@@ -23,7 +23,7 @@ class ConservationPage extends StatelessWidget {
       create: (context) => ConservationPageBloc(contactUser.id),
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: kSecondaryBlackColor,
+            backgroundColor: kSecondaryColor,
             title: Row(
               children: [
                 CircleAvatar(
@@ -128,7 +128,7 @@ class SendMessageView extends StatelessWidget {
                     iconSize: kFi30x,
                     icon: Icons.camera_alt,
                     onPressed: () {},
-                    color: kSecondaryBlackColor,
+                    color: kSecondaryColor,
                   ),
             sendMessageCheck
                 ? SizedBox(
@@ -138,7 +138,7 @@ class SendMessageView extends StatelessWidget {
                     iconSize: kFi30x,
                     icon: Icons.image,
                     onPressed: () {},
-                    color: kSecondaryBlackColor,
+                    color: kSecondaryColor,
                   ),
             sendMessageCheck
                 ? SizedBox(
@@ -148,14 +148,14 @@ class SendMessageView extends StatelessWidget {
                     iconSize: kFi30x,
                     icon: Icons.keyboard_voice,
                     onPressed: () {},
-                    color: kSecondaryBlackColor,
+                    color: kSecondaryColor,
                   ),
             Expanded(
               child: Container(
                 alignment: AlignmentDirectional.center,
                 height: kWh40x,
                 decoration: const BoxDecoration(
-                  color: kSecondaryBlackColor,
+                  color: kSecondaryColor,
                   borderRadius: BorderRadius.all(Radius.circular(kRi20x)),
                 ),
                 child: Padding(
@@ -168,7 +168,9 @@ class SendMessageView extends StatelessWidget {
                               validate: (value) => null,
                               controller: _chatController,
                               hintText: 'Message',
+                              hintTextColor: kPrimaryColor,
                               onTap: () {},
+                              color: kPrimaryColor,
                               focusedInputBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(kRi20x)),
@@ -193,7 +195,7 @@ class SendMessageView extends StatelessWidget {
                 icon: sendMessageCheck ? Icons.send : Icons.waving_hand_sharp,
                 onPressed: () =>
                     context.getConservationBlocInstance().sendMessage(),
-                color: kSecondaryBlackColor,
+                color: kAmber,
                 iconSize: kFi30x)
           ],
         ),
@@ -222,65 +224,53 @@ final String contactUserId ;
         :
       ListView.separated(
         reverse: true,
-        itemBuilder: (context, index) =>
-            (chatMessages[index].user_id != contactUserId)
-                ?
-
-                ///current user
-                 LayoutBuilder(
-                   builder: (context,boxConstraint) {
-                     return Container(
-                         width: boxConstraint.maxWidth < MediaQuery.of(context).size.width * 0.8 ? null : MediaQuery.of(context).size.width * 0.8,
-                         margin: EdgeInsets.only(right: kMp5x),
-                         padding: const EdgeInsets.all(kMp13x),
-                         decoration: BoxDecoration(
-                             color: kSecondaryBlackColor,
-                             borderRadius: BorderRadius.only(
-                                 topLeft: Radius.circular(kRi20x),
-                                 topRight: Radius.circular(kRi10x),
-                                 bottomLeft: Radius.circular(kRi10x))),
-                         // constraints: BoxConstraints(maxWidth: maxWidth),
-                         child: Row(
-                           children: [
-                             Flexible(
-                               child: Center(
-                                 child: EasyText(
-                                   text: chatMessages[index].message ?? '',
-                                   color: kPrimaryColor,
-                                 ),
-                               ),
-                             ),
-                           ],
-                         ));
-                   })
-
-                :
-
-                /// contact user
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                          margin: EdgeInsets.only(left: kMp5x),
-                          padding: const EdgeInsets.all(kMp13x),
-                          decoration: BoxDecoration(
-                              color: kSecondaryBlackColor,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(kRi10x),
-                                  topRight: Radius.circular(kRi20x),
-                                  bottomRight: Radius.circular(kRi10x))),
-                          child: Center(
-                            child: EasyText(
-                              text: chatMessages[index].message ?? '',
-                              color: kPrimaryColor,
-                            ),
-                          )),
-                    ],
-                  ),
+        itemBuilder: (context, index) {
+          String message = chatMessages[index].message ?? '';
+          return MessageView(isSender: chatMessages[index].user_id != contactUserId, message: message);
+        },
 
         separatorBuilder: (context, index) => const SizedBox(
               height: kMp5x,
             ),
         itemCount: chatMessages.length);
+  }
+}
+
+class MessageView extends StatelessWidget {
+  const MessageView({
+    Key? key,
+    required this.isSender,
+    required this.message,
+  }) : super(key: key);
+
+  final bool isSender;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: isSender?MainAxisAlignment.end:MainAxisAlignment.start,
+      children: [
+          Container(
+                margin: EdgeInsets.symmetric(horizontal: kMp5x),
+                padding: const EdgeInsets.all(kMp13x),
+                decoration: BoxDecoration(
+                    color: isSender?kSecondaryColor:kSecondaryShadowColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(isSender?kRi20x:kRi10x),
+                        topRight: Radius.circular(isSender?kRi10x:kRi20x),
+                        bottomRight: Radius.circular(isSender?0:kRi10x),
+                        bottomLeft: Radius.circular(isSender?kRi10x:0))),
+                constraints: BoxConstraints(
+                    maxWidth: message.length<20?getWidth(context) * 0.25:getWidth(context) *0.6),
+                child: Center(
+                    child: EasyText(
+                      text: message,
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                )
+      ],
+    );
   }
 }

@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:wechat/data/data_apply/fire_base_abs.dart';
 import 'package:wechat/data/data_apply/fire_base_impl.dart';
@@ -34,9 +32,9 @@ class HomePageBloc extends ChangeNotifier{
 
       // get user name and profile
       _realtimeApply.getUserVO(id).then((value){
-        var userName = value?.userName;
-        if(!(userNameList.contains(userName))){
-          userNameList.add(userName!);
+        var uid = value?.id;
+        if(!(userNameList.contains(uid))){
+          userNameList.add(uid!);
           chatting.add(value!);
           // print('=====================> $chatting');
           notifyListeners();
@@ -49,9 +47,9 @@ class HomePageBloc extends ChangeNotifier{
         var lastChatId = event?.last.id;
         if(!(lastChatIds.contains(lastChatId))){
           lastChatIds.add(lastChatId!);
-          print('===============> $lastChatIds');
+          //print('===============> $lastChatIds');
           lastChatVOs.add(lastChatVO!);
-          print('==============> $lastChatVOs');
+          //print('==============> $lastChatVOs');
           notifyListeners();
         }
       });

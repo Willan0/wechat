@@ -32,6 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: SizedBox(width: 0,),
         title: EasyText(
           text: 'Profile',
           fontSize: kFi17x,

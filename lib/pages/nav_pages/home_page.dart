@@ -21,6 +21,7 @@ class HomePage extends StatelessWidget {
       create: (context) => HomePageBloc(),
       child: Scaffold(
         appBar: AppBar(
+          leading: SizedBox(width: 0,),
           title: EasyText(
             text: 'Chats',
             fontSize: kFi17x,

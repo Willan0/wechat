@@ -27,6 +27,15 @@ class SignInBloc extends ChangeNotifier {
     return _fireBaseApply.login(_email, _password);
   }
 
+  void setVisibility() {
+    if (_isVisibility == true) {
+      _isVisibility = false;
+    } else {
+      _isVisibility = true;
+    }
+    notifyListeners();
+  }
+
   @override
   void notifyListeners() {
     if (!_isDispose) {

@@ -42,4 +42,24 @@ class RealTimeDataBaseImpl extends RealTimeDataBaseAbs{
       return contacts.keys.toList();
     });
   }
+  //
+  // Stream<ChatVO?> getLastMessage(
+  //     String currentUserId, String contactUserId) {
+  //   return _realTimeDataBase
+  //       .child(kRootNodeForContactAndMessage)
+  //       .child(currentUserId)
+  //       .child(contactUserId)
+  //       .orderByKey()
+  //       .limitToLast(1)
+  //       .onValue
+  //       .map((event) {
+  //     final dataSnapshot = event.snapshot;
+  //     if (dataSnapshot.value == null) {
+  //       return null;
+  //     }
+  //     final chatInfo = Map<String, dynamic>.from(
+  //         dataSnapshot.value as Map<dynamic, dynamic>).values.first;
+  //     return ChatVO.fromJson(chatInfo);
+  //   });
+  // }
 }

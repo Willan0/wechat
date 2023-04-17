@@ -37,6 +37,7 @@ class _FriendPageState extends State<FriendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: SizedBox(width: 0,),
         title: EasyText(
           text: 'Friends',
           fontSize: kFi17x,

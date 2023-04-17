@@ -57,7 +57,7 @@ class SignInTextFieldView extends StatelessWidget {
                       hintText: kPassword,
                       hoverColor: kPrimaryColor,
                       hintStyle: TextStyle(color: kGreyColor),
-                      suffixIcon: IconButton(icon: Icon(visibility?Icons.visibility_off:Icons.visibility,color: visibility?kGreyColor:kPrimaryColor,),onPressed: ()=> context.getSignUpBlocInstance().setVisibility(),)
+                      suffixIcon: IconButton(icon: Icon(visibility?Icons.visibility_off:Icons.visibility,color: visibility?kGreyColor:kPrimaryColor,),onPressed: ()=> context.getSignInBlocInstance().setVisibility(),)
                   ),
                   obscureText: visibility,
                   onChanged: (text){
